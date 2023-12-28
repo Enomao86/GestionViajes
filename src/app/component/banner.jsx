@@ -10,7 +10,12 @@ function Banner() {
   return (
     <section className="flex">
       <div className="flex-1">
-        <Image src={imgbanner} className="h-[80%] w-[80%] opacity-50"></Image>
+        <Image
+          src={imgbanner}
+          alt="logo"
+          className="h-[80%] w-[80%] opacity-50"
+          priority={true}
+        ></Image>
       </div>
       <div className="flex-1">
         <p className="text-lg">
