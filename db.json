@@ -1,11 +1,17 @@
 {
-  "users": [],
-  "viaje": [
+  "users": [
+   
     {
-      "nombre": "2",
-      "fecha": "2023-12-29T11:57:51.269Z",
-      "id": 2
+      "id": "Enomao",
+      "name": "Leandro Romero",
+      "password": "Valeria86",
+      "email": "leandrojromero@gmail.com",
+      "phone": "1133781446",
+      "country": "india",
+      "address": "Agustin de Elia",
+      "gender": "female"
     }
   ],
+  "viaje": [],
   "pasajeros": []
 }

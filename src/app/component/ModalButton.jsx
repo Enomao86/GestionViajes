@@ -2,7 +2,7 @@
 // ModalButton.jsx
 import React, { useState } from "react";
 
-import Register from "../../../pages/register";
+import Register from "../../../pages/Register";
 import Login from "../../../pages/Login";
 
 const ModalButton = () => {

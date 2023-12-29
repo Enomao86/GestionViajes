@@ -5,6 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 
 import imgbanner from "@/app/asset/img/gestionviajes.png";
+import ModalButton from "./ModalButton";
+import Login from "../../../pages/Login";
 
 function Banner() {
   return (
@@ -24,18 +26,14 @@ function Banner() {
           Permite al organizador agregar detalles de cada pasajero, como nombre,
           contacto, preferencias y estado de pago. La capacidad de modificar o
           eliminar pasajeros. <br /> sistema que registra los pagos de cada
-          pasajero, indicando si pagaron total, parcial o nada. incluiye
+          pasajero, indicando si pagaron total, parcial o nada. incluye
           notificaciones para recordar los pagos pendientes. <br />
           Mantén un historial de actividades, como cambios en la lista de
           pasajeros o actualizaciones de pago. Esto proporcionará una visión
           completa del proceso organizativo.
         </p>
-        <Link href="/Panel">
-          <button className="bg-orange-500 hover:bg-orange-700 text-white font-bold  text-lg rounded-md w-[17rem] transition-transform transform hover:scale-105">
-            Comencemos
-          </button>
-        </Link>
-
+      
+<Login/>
         <div></div>
       </div>
     </section>
