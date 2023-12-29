@@ -2,28 +2,38 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+//import { useParams } from "react-router-dom";
+import { useRouter } from "next/router";
 
 const AgregarPasajeros = () => {
-  const { viajeId } = useParams();
+  //const { viajeId } = useParams();
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [dni, setDni] = useState("");
   const [telefono, setTelefono] = useState("");
   const [pasajeros, setPasajeros] = useState([]);
+  const router = useRouter();
+  const { viaje } = router.query;
 
   useEffect(() => {
     // Obtener la lista de pasajeros al cargar el componente
     obtenerPasajeros();
-  }, [viajeId]);
+  }, [viaje]);
 
   const obtenerPasajeros = async () => {
     try {
-      console.log("Identificador del viaje:", viajeId);
-      const response = await axios.get(
-        `http://localhost:4002/pasajeros?viaje=${viajeId}`
-      );
-      setPasajeros(response.data);
+      if (viaje && !isNaN(viaje)) {
+        console.log("Identificador del viaje:", viaje);
+        const response = await axios.get(
+          `http://localhost:4000/viaje/${viaje}/pasajeros`
+        );
+        console.log("Respuesta del servidor:", response.data);
+        setPasajeros(response.data);
+      } else {
+        console.log("No hay un viaje seleccionado.");
+        // Puedes establecer pasajeros en un array vacío o realizar alguna otra lógica
+        setPasajeros([]);
+      }
     } catch (error) {
       console.error("Error al obtener pasajeros:", error);
     }
@@ -31,13 +41,13 @@ const AgregarPasajeros = () => {
 
   const agregarPasajero = async () => {
     try {
-      const nuevoviajeId = viajeId;
-      await axios.post("http://localhost:4002/pasajeros", {
+      const nuevoViaje = viaje;
+      await axios.post("http://localhost:4000/pasajeros", {
         nombre,
         apellido,
         dni,
         telefono,
-        viajeId: nuevoviajeId,
+        viajeId: nuevoViaje,
       });
 
       // Limpiar los campos después de agregar el pasajero
@@ -55,7 +65,7 @@ const AgregarPasajeros = () => {
 
   const eliminarPasajero = async (id) => {
     try {
-      await axios.delete(`http://localhost:4002/pasajeros/${id}`);
+      await axios.delete(`http://localhost:4000/pasajeros/${id}`);
       // Actualizar la lista de pasajeros después de eliminar uno
       obtenerPasajeros();
     } catch (error) {
@@ -65,7 +75,7 @@ const AgregarPasajeros = () => {
 
   return (
     <div>
-      <h2>Agregar Pasajero</h2>
+      <h2>Agregar Pasajero {viaje} </h2>
       <div>
         <label>Nombre:</label>
         <input
@@ -113,19 +123,25 @@ const AgregarPasajeros = () => {
           </tr>
         </thead>
         <tbody>
-          {pasajeros.map((pasajero) => (
-            <tr key={pasajero.id}>
-              <td>{pasajero.nombre}</td>
-              <td>{pasajero.apellido}</td>
-              <td>{pasajero.dni}</td>
-              <td>{pasajero.telefono}</td>
-              <td>
-                <button onClick={() => eliminarPasajero(pasajero.id)}>
-                  Eliminar
-                </button>
-              </td>
+          {pasajeros.length > 0 ? (
+            pasajeros.map((pasajero) => (
+              <tr key={pasajero.id}>
+                <td>{pasajero.nombre}</td>
+                <td>{pasajero.apellido}</td>
+                <td>{pasajero.dni}</td>
+                <td>{pasajero.telefono}</td>
+                <td>
+                  <button onClick={() => eliminarPasajero(pasajero.id)}>
+                    Eliminar
+                  </button>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="5">No hay pasajeros para este viaje</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </div>

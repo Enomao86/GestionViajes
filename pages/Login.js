@@ -3,11 +3,13 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
-const Login = ({ closeModal, history }) => {
+const Login = ({ closeModal }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -20,7 +22,7 @@ const Login = ({ closeModal, history }) => {
 
     try {
       // Verificar las credenciales del usuario
-      const response = await axios.post("http://localhost:4000/users/login", {
+      const response = await axios.post("http://localhost:4000/users", {
         email,
         password,
       });
@@ -35,8 +37,10 @@ const Login = ({ closeModal, history }) => {
         title: "Inicio de sesión exitoso",
         showConfirmButton: false,
         timer: 1500,
+      }).then(() => {
+        // Redirigir a la nueva ruta después del registro exitoso
+        navigate("/Panel");
       });
-      history.push("/Panel");
     } catch (error) {
       console.error("Error al iniciar sesión:", error.response.data);
 

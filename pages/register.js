@@ -1,13 +1,15 @@
-"use cleir";
+"use client";
 import React, { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
-const Register = ({ closeModal, history }) => {
+const Register = ({ closeModal }) => {
   const [alias, setAlias] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const isPasswordValid = password.length >= 6;
@@ -56,7 +58,7 @@ const Register = ({ closeModal, history }) => {
         timer: 1500,
       }).then(() => {
         // Redirigir a la nueva ruta después del registro exitoso
-        history.push("/panel");
+        navigate("/Panel");
       });
     } catch (error) {
       console.error("Error al registrar usuario:", error.response.data);

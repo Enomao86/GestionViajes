@@ -1,15 +1,15 @@
 "use client";
 // ModalButton.jsx
 import React, { useState } from "react";
-import Register from "../component/Register/page";
-import Login from "../component/Login/page";
+
+import Register from "../../../pages/register";
+import Login from "../../../pages/Login";
 
 const ModalButton = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState(null);
 
   const openModal = (content) => {
-    console.log("Abriendo el modal");
     setIsModalOpen(true);
     setModalContent(content);
   };

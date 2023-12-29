@@ -1,54 +1,43 @@
-// components/Panel.js
 "use client";
 import React, { useState, useEffect } from "react";
-import BackgroundAnimation from "../component/BackgroundAnimation";
-import Header from "../component/Header";
-import Link from "next/link";
-import Fondo from "../component/fondo";
 import axios from "axios";
+import BackgroundAnimation from "../src/app/component/BackgroundAnimation";
+import Header from "../src/app/component/Header";
+import Link from "next/link";
+import Fondo from "../src/app/component/fondo";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-
 const Panel = () => {
-  const [viajes, setViajes] = useState([]);
+  const [viaje, setViaje] = useState([]);
   const [nuevoViaje, setNuevoViaje] = useState("");
   const [nuevaFecha, setNuevaFecha] = useState(new Date());
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedViajeIndex, setSelectedViajeIndex] = useState(null);
 
   useEffect(() => {
-    cargarViajes();
+    cargarViaje();
   }, []);
 
-  const cargarViajes = async () => {
+  const cargarViaje = async () => {
     try {
-      const response = await axios.get("http://localhost:4001/viajes");
-      setViajes(response.data);
+      const response = await axios.get("http://localhost:4000/viaje");
+      setViaje(response.data);
     } catch (error) {
-      console.error("Error al cargar viajes:", error);
-
-      if (error.response) {
-        console.error("Respuesta del servidor:", error.response.data);
-      } else if (error.request) {
-        console.error("No se recibió respuesta del servidor");
-      } else {
-        console.error("Error de configuración:", error.message);
-      }
+      console.error("Error al cargar viaje:", error);
+      // ...
     }
   };
 
   const agregarViaje = async () => {
     if (nuevoViaje.trim() !== "") {
       try {
-        const nuevoId = uuidv4();
-        await axios.post("http://localhost:4001/viajes", {
-          id: nuevoId,
+        await axios.post("http://localhost:4000/viaje", {
           nombre: nuevoViaje,
           fecha: nuevaFecha.toISOString(),
         });
 
-        cargarViajes();
+        cargarViaje();
 
         setNuevoViaje("");
         setNuevaFecha(new Date());
@@ -65,44 +54,28 @@ const Panel = () => {
 
   const eliminarViaje = async () => {
     try {
-      if (
-        selectedViajeIndex !== null &&
-        typeof selectedViajeIndex === "string" // Asegura que es un UUID
-      ) {
-        const selectedViaje = viajes.find(
-          (viaje) => viaje.id === selectedViajeIndex
-        );
-        if (!selectedViaje) {
-          throw new Error("No se ha encontrado el viaje seleccionado");
-        }
-
-        const viajeId = selectedViaje.id;
-
-        const responsePasajeros = await axios.get(
-          `http://localhost:4002/viajes/${viajeId}/pasajeros`
+      if (selectedViajeIndex !== null) {
+        // Obtener los pasajeros asociados al viaje antes de eliminarlo
+        const pasajerosResponse = await axios.get(
+          `http://localhost:4000/viaje/${selectedViajeIndex}/pasajeros`
         );
 
-        const pasajerosAsociados = responsePasajeros.data[0]?.pasajeros || [];
+        // Eliminar el viaje
+        await axios.delete(`http://localhost:4000/viaje/${selectedViajeIndex}`);
+
+        // Eliminar los pasajeros asociados al viaje
+        const pasajerosAEliminar = pasajerosResponse.data.map(
+          (pasajero) => pasajero.id
+        );
 
         await Promise.all(
-          pasajerosAsociados.map(async (pasajeroId) => {
-            try {
-              await axios.delete(
-                `http://localhost:4002/pasajeros/${pasajeroId}`
-              );
-            } catch (error) {
-              console.error(
-                `Error al eliminar el pasajero ${pasajeroId}:`,
-                error
-              );
-            }
-          })
+          pasajerosAEliminar.map((pasajeroId) =>
+            axios.delete(`http://localhost:4000/pasajeros/${pasajeroId}`)
+          )
         );
 
-        await axios.delete(`http://localhost:4001/viajes/${viajeId}`);
-
-        setViajes((prevViajes) =>
-          prevViajes.filter((viaje) => viaje.id !== selectedViaje.id)
+        setViaje((prevViaje) =>
+          prevViaje.filter((viaje) => viaje.id !== selectedViajeIndex)
         );
 
         setShowDeleteModal(false);
@@ -153,7 +126,7 @@ const Panel = () => {
       </div>
 
       <ul className="mt-8">
-        {viajes.map((viaje) => (
+        {viaje.map((viaje) => (
           <li key={viaje.id} className="mt-4 ml-9 ">
             {viaje.nombre}- {formatFecha(viaje.fecha)}
             <button

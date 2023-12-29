@@ -1,12 +1,11 @@
 {
-  "users": [
+  "users": [],
+  "viaje": [
     {
-      "alias": "Mariano",
-      "email": "leandrojromero@gmail.com",
-      "password": "123456p",
-      "id": 1
+      "nombre": "2",
+      "fecha": "2023-12-29T11:57:51.269Z",
+      "id": 2
     }
   ],
-  "trips": [],
-  "passengers": []
+  "pasajeros": []
 }

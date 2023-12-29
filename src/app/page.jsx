@@ -1,25 +1,29 @@
-import Image from "next/image";
-import "./globals.css";
+"use client";
 
-import Banner from "./component/banner";
-import Header from "./component/Header";
-import BackgroundAnimation from "./component/BackgroundAnimation";
-import Login from "./component/Login/page";
-import ModalButton from "./ModalButton/page";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import Panel from "../../pages/Panel";
+import ModalButton from "./component/ModalButton";
+import Register from "../../pages/register";
+import IngresarPasajeros from "../../pages/IngresarPasajeros";
+import Home from "/Home";
+import Login from "../../pages/Login";
 
-
-export default function Home() {
+function App() {
   return (
-    <div>
+    <Router>
       <div>
-        {/* <div className="relative"> */}
-        {/* Capa de animación como fondo */}
-        {/* <div className="absolute inset-0"> */}
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/Panel" element={<Panel />} />
+          <Route path="IngresarPasajeros" element={<IngresarPasajeros />} />
+          <Route path="Register" element={<Register />} />
+          <Route path="Login" element={<Login />} />
+        </Routes>
+        <h2>hola mundo</h2>
       </div>
-      <div>
-        <ModalButton />
-        
-      </div>
-    </div>
+    </Router>
   );
 }
+
+export default App;
